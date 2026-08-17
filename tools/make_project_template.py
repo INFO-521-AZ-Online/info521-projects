@@ -196,12 +196,16 @@ def main():
     print(f"""
 Done: {OUT}  (fresh git repo, student-facing)
 
-Next (your steps; replace the org):
-  gh repo create <org>/info521-projects --public \\
+Next (your steps):
+  gh repo create INFO-521-AZ-Online/info521-projects-template --public \\
       --source={OUT} --remote=origin --push
-  gh repo edit <org>/info521-projects --template          # Classroom50 requires is_template
-  gh teacher assignment add <org> <classroom> projects \\
-      --name "Projects" --template <org>/info521-projects
+  gh repo edit INFO-521-AZ-Online/info521-projects-template --template   # Classroom50 requires is_template
+  gh teacher assignment add INFO-521-AZ-Online info521 projects \\
+      --name "Projects" --template INFO-521-AZ-Online/info521-projects-template
+
+NOTE the -template suffix: INFO-521-AZ-Online/info521-projects is already the
+pushed source repo. Do not target that name here, it is a different repo with
+a different job (this one is the stripped Classroom 50 assignment template).
 
 Make the template PUBLIC: with the org base permission at "No permission",
 students can only read a public template (Classroom 50 wiki, Assignment
