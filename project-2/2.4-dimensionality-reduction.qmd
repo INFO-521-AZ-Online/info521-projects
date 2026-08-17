@@ -1,0 +1,169 @@
+---
+title: "Milestone 2.4: Dimensionality Reduction"
+subtitle: "From Inference to Discovery · Gate B (Unsupervised) · 2 of 2"
+author: "Your name"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+execute:
+  warning: false
+jupyter: python3
+---
+
+## The structure lens
+
+Six features are two too many to *look at* directly. **PCA** finds the orthogonal
+directions along which the cohort varies most, lets you keep the few that carry the
+signal, and hands you a 2-D picture you can actually read. Then comes the payoff:
+you will drop the **k-means clusters from 2.3** into that 2-D space and see whether
+the structure the algorithm found is *visible*, "reduce, then look."
+
+> **Ground rules.** Implement PCA from scratch in NumPy/SciPy, centering,
+> covariance, eigendecomposition (or SVD), projection. No scikit-learn, no `PCA`.
+> The `info521` library gives you data, plotting, and self-checks only.
+
+> **What's a feature here.** The same **six non-BP columns** `ds["X"]`, standardized
+> as in 2.3. PCA is unsupervised: the hypertension label is used only to *color*
+> the projection, never to compute it.
+
+## What "Satisfactory" means for 2.4
+
+- [ ] You implement **PCA from scratch** (center, covariance,
+      **eigendecomposition or SVD**, project) and explain **variance explained**.
+- [ ] You produce a **2-D projection / biplot** and read **which features load on
+      PC1 and PC2**.
+- [ ] You **integrate with 2.3**: re-view your **k-means clusters in PC space** and
+      discuss what the projection reveals.
+- [ ] **Play artifact** (below) complete and interpreted.
+
+---
+
+## Setup
+
+```{python}
+import numpy as np
+from info521 import data, plotting, checks
+
+plotting.use_course_style()
+ds = data.load_clinical()
+
+X_raw = ds["X"]                       # (n, 6): age, bmi, waist, chol, hdl, hba1c
+feature_names = ds["features"]
+labels, rule = data.hypertension(ds)  # for COLORING the projection only
+
+print(f"{X_raw.shape[0]} patients · {X_raw.shape[1]} features = {feature_names}")
+```
+
+## 0 · Center (and scale) the features
+
+PCA is defined on **centered** data; because the six features are on different
+scales, standardize them first (so this is PCA on the correlation structure, which
+keeps `chol` from dominating purely by its units). Reuse your 2.3 `standardize`.
+
+```{python}
+# TODO: Xz = standardized six-feature matrix (mean 0, sd 1 per column).
+```
+
+## 1 · PCA from scratch
+
+Two equivalent routes, pick one and say why:
+
+- **Covariance + eigendecomposition.** Form
+  $\boldsymbol\Sigma = \frac{1}{N-1}\mathbf{X}_c^\top\mathbf{X}_c$, eigendecompose
+  $\boldsymbol\Sigma = \mathbf{V}\boldsymbol\Lambda\mathbf{V}^\top$, sort by
+  descending eigenvalue. Columns of $\mathbf{V}$ are the principal directions;
+  $\lambda_i$ is the variance along direction $i$.
+- **SVD.** $\mathbf{X}_c = \mathbf{U}\mathbf{S}\mathbf{V}^\top$; the same $\mathbf{V}$,
+  with $\lambda_i = s_i^2/(N-1)$. (Numerically steadier, note that in your writeup.)
+
+Project with $\mathbf{Z} = \mathbf{X}_c\mathbf{V}_k$ for the top $k$ components.
+
+```{python}
+def pca_fit(Xc):
+    # TODO: return (components V, explained_variance lambda) sorted descending.
+    # Use np.linalg.eigh on the covariance OR np.linalg.svd on Xc. Be careful with
+    # eigenvector ordering and sign (sign is arbitrary: fix a convention).
+    raise NotImplementedError
+
+def pca_project(Xc, V, k):
+    # TODO: return the (n, k) projection onto the first k components.
+    raise NotImplementedError
+```
+
+## 2 · Variance explained & the scree plot
+
+The proportion of variance on component $i$ is
+$\lambda_i / \sum_j \lambda_j$. Report the per-component and **cumulative** shares,
+and draw the **scree plot**.
+
+```{python}
+def explained_variance_ratio(lambdas):
+    # TODO: return lambdas normalized to sum to 1.
+    raise NotImplementedError
+
+# TODO: scree plot (per-component) + cumulative curve. How many components to reach,
+# say, 80-90% of the variance? Is the six-feature cohort "really" low-dimensional?
+```
+
+## 3 · The biplot: what loads on PC1/PC2
+
+Overlay the **feature loadings** (rows of $\mathbf{V}$ for PC1/PC2) on the 2-D score
+scatter. A feature's loading vector shows how strongly, and in which direction, it
+drives each axis.
+
+```{python}
+# TODO: scatter the PC1-PC2 scores; draw each feature's loading as an arrow from the
+# origin. Which features load together on PC1? Does that echo the metabolic
+# (bmi/waist) and lipid (chol/hdl) blocks from the Part 1 data description?
+```
+
+## 4 · k-means clusters in PC space
+
+Bring in your **best k-means labelling from 2.3** and color the PC1–PC2 scatter by
+cluster. This is the integration step: structure that lived in six invisible
+dimensions, now (partly) visible in two.
+
+```{python}
+# TODO: color the 2-D projection by your 2.3 cluster labels; in a second panel,
+# color the SAME points by the hypertension label. Do the clusters occupy distinct
+# regions of PC space? Does either axis separate hypertensive from non-hypertensive?
+```
+
+**Write 200–300 words**: what does the projection reveal that the six-dimensional
+view hid? Connect three things, the features loading on PC1/PC2, the k-means
+clusters, and the hypertension label. If the clusters look clean in PC space but the
+label does not separate, what does that tell you about geometric vs. clinical
+structure (tying back to the 2.3 reveal)?
+
+---
+
+## Play artifact: scree, biplot, clusters-in-PC-space
+
+1. **Scree / cumulative variance**: how the intrinsic dimensionality reads off the
+   eigenvalue spectrum.
+2. **Biplot exploration**: rotate attention across components, what loads on PC3
+   that PC1/PC2 miss?
+3. **Clusters-in-PC-space overlay**: the 2.3 clusters and the hypertension label,
+   side by side, in the projection.
+
+**Write 150–250 words** synthesizing the three panels into one claim about the
+cohort's structure.
+
+```{python}
+# TODO: the three panels + the synthesizing interpretation.
+```
+
+::: {.callout-note}
+## Gate B
+2.3 and 2.4 together form the **unsupervised gate**. Per `GRADING.md`, Gate B is
+complete when **both** are Satisfactory **and Checkpoint 2.3** (the k-means / PCA
+checkpoint) is passed. There is no separate checkpoint for 2.4.
+:::
+
+## Looking ahead
+
+In **2.5** you tie the whole semester together on this one cohort: regression
+(P1) → supervised hypertension classification (Gate A) → unsupervised structure
+(Gate B), and argue which framing answers which clinical question.

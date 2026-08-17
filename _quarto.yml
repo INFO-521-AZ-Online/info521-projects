@@ -1,0 +1,13 @@
+project:
+  title: "INFO 521 Projects (Spring 2026)"
+  type: default
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    embed-resources: true
+    code-tools: true
+
+execute:
+  freeze: auto

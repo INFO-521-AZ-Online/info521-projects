@@ -1,0 +1,39 @@
+# This CITATION.cff file was generated to make this repository citable.
+# Check https://citation-file-format.github.io/ for guidance.
+#
+# Before your first Zenodo release: fill in `version`, `date-released`, and
+# `license` below (no LICENSE file exists in this repo yet; pick one, e.g.
+# CC-BY-4.0 for the milestone notebooks and MIT for common/info521, or one
+# license for the whole repo, and add the corresponding LICENSE file).
+# ORCID is optional but recommended if you have one.
+
+cff-version: 1.2.0
+message: "If you use or adapt this project, please cite it as below."
+title: "INFO 521: Machine Learning Foundations — Course Project"
+abstract: >-
+  Student-facing materials for the INFO 521 course project, at the
+  University of Arizona College of Information Science: a single clinical
+  dataset (NHANES 2021-2022) worked through two parts and nine milestone
+  notebooks, from least squares and maximum likelihood through approximate
+  Bayesian inference, classification, and unsupervised methods. Includes
+  the shared data-loading and plotting package and the grading criteria.
+  Reference solutions are held in a private repository and are not
+  included here. Companion repository to the INFO 521 course hub.
+type: software
+authors:
+  - family-names: "Chism"
+    given-names: "Greg"
+    affiliation: "University of Arizona, College of Information Science"
+    orcid: "https://orcid.org/0000-0002-5478-2445"
+repository-code: "https://github.com/gchism94/info521-projects-2026"
+url: "https://gchism94.github.io/info521/projects.html"
+version: "1.0.0"
+date-released: "2026-08-17"
+license: "CC-BY-4.0"
+keywords:
+  - machine-learning
+  - statistics
+  - bayesian-inference
+  - clinical-data
+  - graduate-course
+  - open-educational-resources

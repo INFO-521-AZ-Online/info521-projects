@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Quarto
+/.quarto/
+*_files/
+/_site/
+.quarto/
+_freeze/
+# Rendered notebook outputs (regenerate with `quarto render`)
+project-1/*.html
+project-2/*.html
+solutions/**/*.html
+
+# NHANES raw XPT downloads (cached build inputs; rebuild via data/build_nhanes.py)
+data/raw/
+
+**/*.quarto_ipynb
+
+# Generated Classroom 50 student templates (tools/make_project_template.py).
+# Each build/ subdir is a fresh git repo; committing it would nest a whole
+# student template inside the source repo.
+/build/
+
+# Retired material staged for manual deletion; never commit
+_to_delete/

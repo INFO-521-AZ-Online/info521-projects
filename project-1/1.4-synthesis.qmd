@@ -1,0 +1,74 @@
+---
+title: "Milestone 1.4: Synthesis: Three Lenses, One Problem"
+subtitle: "One Problem, Three Lenses · Synthesis"
+author: "Your name"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+jupyter: python3
+---
+
+## The payoff
+
+You have answered the same clinical question three ways. Now make the comparison
+*visible* and *argued*. This synthesis is where the conceptual connections become
+concrete, the same prediction, seen as a point, a likelihood, and a posterior.
+
+## What "Satisfactory" means for 1.4
+
+- [ ] A **single comparison panel** shows the same age → SBP prediction under
+      all three lenses: OLS point estimate, MLE with $\pm 2\hat\sigma$ band, and
+      posterior-predictive credible interval.
+- [ ] A written **compare-and-contrast** (≈400–600 words) of the three
+      approaches: what each assumes, what each produces, how the parameter
+      estimates relate, and when you would reach for each.
+- [ ] The notebook **runs end-to-end** against the pinned environment.
+- [ ] Structured **peer review** completed (rubric posted on D2L).
+
+---
+
+## The comparison panel
+
+```{python}
+import numpy as np
+from info521 import data, plotting
+plotting.use_course_style()
+ds = data.load_clinical()
+age = data.primary_predictor(ds)
+y = ds["y"]
+
+# TODO: bring in your fits from 1.1-1.3 (import your module or re-fit) and draw
+# ONE figure overlaying: OLS line, MLE mean + error band, posterior mean +
+# credible band, over the data scatter. Use distinct Okabe-Ito colors and a
+# legend.
+```
+
+## The argument
+
+Address, in prose:
+
+1. **Assumptions.** What does each lens assume about the world (about error,
+   about the parameters)?
+2. **Outputs.** A number, a likelihood surface, a distribution, what do you
+   actually get back, and what can you *say* with each?
+3. **Relationships.** Why does the MLE for $\mathbf{w}$ coincide with OLS? Under
+   what conditions does the posterior mean approach the MLE?
+4. **Choice.** Given a new clinical question, which lens would you pick, and why?
+
+## Reflection (1 paragraph)
+
+What did switching lenses teach you that any single lens would have hidden?
+
+::: {.callout-tip}
+## Bridge to Part 2
+Everything here rested on a **conjugate** prior–likelihood pair, which kept the
+posterior in closed form. In Part 2 you binarize systolic BP into a
+**hypertension** label (the ACC/AHA rule: SBP ≥ 130 or DBP ≥ 80) and predict it
+from the **non-BP** features: the blood-pressure columns are held out so the
+label can't leak into its own predictors. Conjugacy breaks, the posterior goes
+intractable, and you meet Newton–Raphson, the Laplace approximation, and MCMC,
+then SVMs, clustering, and PCA across the *full* (non-BP) feature set, not just age.
+:::

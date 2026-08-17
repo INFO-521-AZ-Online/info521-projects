@@ -1,0 +1,22 @@
+# Pinned to match the course environment: Python 3.11 (NOT 3.14 — C-ABI/numpy
+# incompatibility), numpy 2.1.x. Quarto must be installed separately
+# (https://quarto.org); it is not a conda/pip package here.
+name: info521-projects
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy=2.1.*
+  - scipy>=1.13
+  - matplotlib>=3.8
+  # pandas is a BUILD-time dependency only: it is used by data/build_nhanes.py to
+  # parse the NHANES XPT files and assemble data/nhanes_2021_2022.csv. The
+  # student-facing loader (common/info521/data.py) stays numpy-only.
+  - pandas>=2.0
+  - jupyter
+  - ipykernel
+  - nbformat
+  - nbclient
+  - pip
+  - pip:
+      - -e .

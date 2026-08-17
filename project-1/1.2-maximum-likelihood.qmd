@@ -1,0 +1,126 @@
+---
+title: "Milestone 1.2: Maximum Likelihood"
+subtitle: "One Problem, Three Lenses · Lens 2 of 3"
+author: "Your name"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+jupyter: python3
+---
+
+## The second lens
+
+In 1.1 you minimized squared error. Now you will **model the noise explicitly**.
+Assume each target is generated as
+$$
+y_n = \mathbf{w}^\top \boldsymbol{\phi}(x_n) + \epsilon_n,
+\qquad \epsilon_n \sim \mathcal{N}(0,\ \sigma^2),
+$$
+and estimate $\mathbf{w}$ and $\sigma^2$ by maximizing the likelihood. The payoff:
+you get *uncertainty*, not just a point prediction, and you will see that the
+MLE for $\mathbf{w}$ is the very same answer least squares gave you.
+
+> Same ground rules: from-scratch NumPy/SciPy, no off-the-shelf solvers. Your
+> own homework code is not "off the shelf": Unit 3's `w_mle` and `sigma2_mle`
+> are exactly the estimators this milestone applies, and carrying them in is
+> encouraged.
+
+## What "Satisfactory" means for 1.2
+
+- [ ] You **state the generative model** in prose and write the dataset
+      log-likelihood under conditional independence.
+- [ ] You implement the **MLE for $\mathbf{w}$** and show *numerically on your own
+      data* that it equals your 1.1 OLS fit (this equivalence is the point).
+- [ ] You estimate **$\hat{\sigma}^2$**.
+- [ ] You compute and plot **predictive error bars** $\hat{y} \pm 2\hat{\sigma}$.
+- [ ] **Play artifact**: error bars visibly widen where data is sparse / at the
+      age range edges, with a written explanation.
+- [ ] **Checkpoint quiz 1.2 (MLE for $\mathbf{w}$)** passed.
+
+---
+
+## Setup
+
+```{python}
+import numpy as np
+from info521 import data, plotting, checks
+plotting.use_course_style()
+ds = data.load_clinical()
+age = data.primary_predictor(ds)
+y = ds["y"]
+```
+
+## 1 · The generative model and the likelihood
+
+In a markdown cell, write the likelihood of the full dataset given i.i.d.
+Gaussian noise, and its log. Identify what maximizing it over $\mathbf{w}$ reduces
+to.
+
+## 2 · MLE for the weights: and the equivalence
+
+```{python}
+def mle_weights(X, y):
+    # TODO: the analytic MLE for w under Gaussian noise. Your Unit 3 w_mle is
+    # this function: bring it in (it was certified against the same fixture).
+    raise NotImplementedError
+
+# Reuse your 1.1 design_matrix / ols_fit (copy them in or import your module).
+# Show numerically that mle_weights(X, y) == ols_fit(X, y) to tolerance, and
+# say in one sentence WHY they coincide.
+```
+
+## 3 · MLE for the noise variance
+
+```{python}
+def mle_sigma2(X, y, w):
+    # TODO: (1/N) * sum of squared residuals. Your Unit 3 sigma2_mle is this
+    # function: bring it in.
+    # Self-check on the fixture:
+    #   checks.expect_close(mle_sigma2(checks.LINEAR_FIXTURE.X,
+    #                                  checks.LINEAR_FIXTURE.y,
+    #                                  checks.LINEAR_FIXTURE.w_ols),
+    #                       checks.LINEAR_FIXTURE.sigma2_mle, "sigma^2 MLE")
+    raise NotImplementedError
+```
+
+## 4 · Predictive uncertainty
+
+Plot the fit over the data with a $\pm 2\hat{\sigma}$ band using
+`plotting.error_band(...)`.
+
+```{python}
+# TODO: grid of ages, predicted mean, constant-sigma band.
+```
+
+---
+
+## Play artifact: where is the model unsure?
+
+Prediction uncertainty is largest at the **high-leverage extremes at both ends of
+the age range**, where a polynomial fit has the least surrounding data to pin it
+down, so it extrapolates rather than interpolates. Examine how prediction
+uncertainty behaves across the age range. (Hint: a constant $\hat\sigma$ band is
+only the start, consider what *parameter* uncertainty would add at those extremes,
+which you will formalize in 1.3.)
+
+**Write 150–250 words**: where is the model least trustworthy, and why? Connect
+this to the amount and location of the data.
+
+```{python}
+# TODO: visualize and discuss.
+```
+
+::: {.callout-note}
+## Gate
+Not Satisfactory until **Checkpoint quiz 1.2 (derive the MLE for $\mathbf{w}$)** is
+passed. The checkpoint is an open-book D2L quiz, due the week before this milestone; the auto-graded portion resolves on submission and written responses allow one revision.
+:::
+
+## Looking ahead
+
+In 1.3 you put a **prior** on $\mathbf{w}$. The point estimate becomes a posterior
+*distribution*, and the error bars you drew here gain a principled,
+data-location-aware shape.
